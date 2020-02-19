@@ -4,3 +4,5 @@ docker ps -a
 删除一个或者多个镜像
 docker rmi image-name
 
+查看正在运行的镜像
+docker ps
