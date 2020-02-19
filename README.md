@@ -376,3 +376,6 @@ docker pull registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:eureka-v201
 		
 		4、访问redis容器里面，进行操作
 		docker exec -it 295058d2b92e redis-cli
+		
+	7.docker 项目部署
+	https://www.cnblogs.com/huangzhimin/p/11433789.html
