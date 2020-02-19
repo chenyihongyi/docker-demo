@@ -117,7 +117,7 @@
 
 
 
-	5、实战应用之使用Docker部署Nginx服务器
+	5、使用Docker部署Nginx服务器
 		简介：讲解使用Docker部署Nginx服务器实战
 		1、获取镜像 
 			docker run (首先会从本地找镜像，如果有则直接启动，没有的话，从镜像仓库拉起，再启动)
@@ -188,3 +188,191 @@
 
 					启动容器：
 					docker run -d --name "xdclass_mq" -p 5672:5672 -p 15672:15672 2f415b0e9a6e
+
+
+
+
+
+
+第十三章 微服务高级篇幅SpringCloud和Docker整合部署
+	
+	第1课 高级篇幅之构建SpringBoot应用docker镜像上集
+
+	简介:使用Docker的maven插件，构建springboot应用
+	
+	官方文档：https://spring.io/guides/gs/spring-boot-docker/
+
+	1、步骤：maven里面添加配置pom.xml
+		
+		 <properties>
+		   <docker.image.prefix>xdclass</docker.image.prefix>
+		</properties>
+
+		<build>
+			<finalName>docker-demo</finalName>
+		    <plugins>
+		        <plugin>
+		            <groupId>com.spotify</groupId>
+		            <artifactId>dockerfile-maven-plugin</artifactId>
+		            <version>1.3.6</version>
+		            <configuration>
+		                <repository>${docker.image.prefix}/${project.artifactId}</repository>
+		                <buildArgs>
+		                    <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+		                </buildArgs>
+		            </configuration>
+		        </plugin>
+		    </plugins>
+		</build>
+
+		配置讲解
+		Spotify 的 docker-maven-plugin 插件是用maven插件方式构建docker镜像的。
+		${project.build.finalName} 产出物名称，缺省为${project.artifactId}-${project.version}
+
+	第2课 高级篇幅之构建SpringBoot应用docker镜像下集
+
+			简介:打包SpringCloud镜像并上传私有仓库并部署
+
+			1、创建Dockerfile,默认是根目录，（可以修改为src/main/docker/Dockerfile,如果修则需要制定路径）
+				什么是Dockerfile : 由一系列命令和参数构成的脚本，这些命令应用于基础镜像, 最终创建一个新的镜像
+
+				FROM openjdk:8-jdk-alpine
+				VOLUME /tmp
+				ARG JAR_FILE
+				COPY ${JAR_FILE} app.jar
+				ENTRYPOINT ["java","-jar","/app.jar"]
+
+
+				参数讲解：
+				FROM <image>:<tag> 需要一个基础镜像，可以是公共的或者是私有的， 后续构建会基于此镜像，如果同一个Dockerfile中建立多个镜像时，可以使用多个FROM指令
+				
+				VOLUME  配置一个具有持久化功能的目录，主机 /var/lib/docker 目录下创建了一个临时文件，并链接到容器的/tmp。改步骤是可选的，如果涉及到文件系统的应用就很有必要了。/tmp目录用来持久化到 Docker 数据文件夹，因为 Spring Boot 使用的内嵌 Tomcat 容器默认使用/tmp作为工作目录 
+
+				ARG  设置编译镜像时加入的参数， ENV 是设置容器的环境变量
+				COPY : 只支持将本地文件复制到容器 ,还有个ADD更强大但复杂点
+				ENTRYPOINT 容器启动时执行的命令
+				EXPOSE 8080 暴露镜像端口
+			2、构建镜像
+			mvn install dockerfile:build
+			打标签
+			docker tag a1b9fc71720d registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:docker-demo-v201808
+			推送到镜像仓库
+			docker push registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:docker-demo-v201808
+
+			应用服务器拉取镜像
+			docker pull registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:docker-demo-v201808
+
+
+			docker run -d --name xdclass_docker_demo1 -p 8099:8080  a1b9fc71720d
+
+			3、查看启动日志 docker logs -f  containerid
+		 
+			文档：https://yeasy.gitbooks.io/docker_practice/image/dockerfile/
+
+
+
+
+
+
+
+
+
+
+
+	第3课 注册中心打包Docker镜像
+		简介：讲解使用Docker打包注册中心，上传私有镜像仓库并部署
+
+		1、新增maven插件
+			<properties>
+			   <docker.image.prefix>xdclass</docker.image.prefix>
+			</properties>
+
+			<build>
+				<finalName>docker-demo</finalName>
+			    <plugins>
+			        <plugin>
+			            <groupId>com.spotify</groupId>
+			            <artifactId>dockerfile-maven-plugin</artifactId>
+			            <version>1.3.6</version>
+			            <configuration>
+			                <repository>${docker.image.prefix}/${project.artifactId}</repository>
+			                <buildArgs>
+			                    <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+			                </buildArgs>
+			            </configuration>
+			        </plugin>
+			    </plugins>
+			</build>
+
+		2、新建Dockerfile
+				FROM openjdk:8-jdk-alpine
+				VOLUME /tmp
+				ARG JAR_FILE
+				COPY ${JAR_FILE} app.jar
+				ENTRYPOINT ["java","-jar","/app.jar"]
+
+		3、打包：
+			mvn install dockerfile:build
+
+		4、推送阿里云镜像仓库
+
+		阿里云镜像仓库：https://dev.aliyun.com/search.html
+
+docker tag 062d2ddf272a registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:eureka-v20180825
+docker push registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:eureka-v20180825
+docker pull registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:eureka-v20180825
+
+		5、查看日志 docker logs -f  containerid
+
+
+
+
+
+
+	第4课 部署RabbitMQ和配置中心打包Docker镜像
+		简介：讲解使用Docker打包配置中心，和部署RabbitMQ
+
+		1、服务地址 ssh root@47.106.120.173
+
+		部署	rabbitmq： docker run -d -p 5672:5672 -p 15672:15672 rabbitmq:management
+
+		2、推送镜像
+
+		docker tag 0f636543904e registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:config-server-v20180825
+
+		docker push registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:config-server-v20180825
+
+		docker pull registry.cn-shenzhen.aliyuncs.com/xdclass/xdclass_images:config-server-v20180825
+
+
+
+	5、常见问题处理之升级云服务器
+		简介：处理上节课出现的问题，升级服务器注意事项
+
+		1、升级云服务器配置（购买配置后需要重启机器才生效）
+		
+		2、启动完成后，需要开启docker
+			指令： systemctl  start docker
+
+		3、所有对外的都要经过网关才可以对外，应用间通信(除非跨机房)都用内网通信
+
+
+
+
+
+
+
+
+
+	6、Docker部署Redis
+		简介：使用Docker安装redis
+		1、搜索镜像 docker search redis
+		
+		2、拉取 docker pull docker.io/redis
+		
+		3、启动 docker run --name "xd_redis" -p 6379:6379 -d 4e8db158f18d
+		参考：
+		docker run --name "xd_redis" -p 6379:6379 -d 4e8db158f18d --requirepass "123456" -v $PWD/data:/data
+		
+		4、访问redis容器里面，进行操作
+		docker exec -it 295058d2b92e redis-cli

@@ -1,0 +1,6 @@
+查看所有容器，包括关闭的:
+docker ps -a
+
+删除一个或者多个镜像
+docker rmi image-name
+
