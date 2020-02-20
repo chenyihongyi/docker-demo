@@ -1,20 +1,33 @@
 touch README.md
-git init
-git status
-git add .
-git status
-git commit -am '新建springcloud项目'
-git remote add origin https://github.com/chenyihongyi/docker-demo.git
-git branch
-git pull
-git push -u -f origin master (强制提交)
-git branch
-git branch -r
-14. 创建分支
-git checkout -b v1.0 origin/master
-git branch
-git push origin HEAD -u (推送到远程分支)
 
+git init
+
+git status
+
+git add .
+
+git status
+
+git commit -am '新建springcloud项目'
+
+git remote add origin https://github.com/chenyihongyi/docker-demo.git
+
+git branch
+
+git pull
+
+git push -u -f origin master (强制提交)
+
+git branch
+
+git branch -r
+
+创建分支
+git checkout -b v1.0 origin/master
+
+git branch
+
+git push origin HEAD -u (推送到远程分支)
 
 分支操作：
 
