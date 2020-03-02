@@ -136,6 +136,8 @@ incr使用场景:分布式数据库中订单ID的生成。
 hash类型适合增删改操作。
 
 hset、 hget、 hdel(存取某个数据库字段，不能对多个字段赋 值)
+eg:>hset hash name zhangsan, 
+>hget hash name
 
 hmget、 hmset(可以对多个字段赋值)
 
@@ -207,7 +209,7 @@ redis事物是没有回滚操作的。
 redis出现问题，都是语法问题和类型问题，这些问题，都是在编码 阶段必须要解决的 问题
 
 redis事务执行原理图
-
+C:\Users\ElvisChen\Desktop
 
 
 
