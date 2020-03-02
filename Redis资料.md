@@ -76,20 +76,29 @@ vim redis.conf
 4.默认绑定是回环地址,默认不能被其他机器访问
 
 bind 127.0.0.1
+
 5.是否开启保护模式，由yes改为no
 
 protected-mode no
 6.启动服务
 ./redis-server redis.conf
+
 9.其他命令说明:
+
 redis-server：启动redis
+
 redis-cli : 进入redis命令客户端
+
 redis-benchmark：性能测试的工具
+
 redis-check-aof ： aof文件进行检查的工具
+
 redis-check-dump：rdb文件进行检查的工具
+
 redis-setinel：启动哨兵监控服务。
 
 10.windows版本Redis
+
 https://jingyan.baidu.com/article/7f766daff725cf4101e1d0d1.html
 
 D:\Program Files\Redis
@@ -97,9 +106,12 @@ D:\Program Files\Redis
 1.选择Redis安装目录，cmd
 
 2.在命令行窗口输入redis-server.exe redis.windows.conf指令执行报错误
+
 [13164] 27 Dec 20:57:07.820 # Creating Server TCP listening socket
  127.0.0.1:637 9: bind: No error。
+ 
 那么可以输入如下的命令依次执行第一条指令：redis-cli.exe，
+
 第二条指令：shutdown第三条指令：exit
 
 3.在命令行窗口输入redis-server.exe redis.windows.conf，
@@ -182,6 +194,22 @@ eg: zrange zset 0 -1 // 结果 “b”"a" "c"
 销售作为分数
 
 销售人员或者商品作为member
+
+11. Redis事务
+redis中实务是通过4个命令来实现的: multi(开启事物)、exec(提交事 务)、discard(清楚 事务队列)、watch(监控，实现乐观锁)、unwatch
+
+redis中的单个命令都是原子性的。redis中的事物主要是用来管理redis 命令集合。
+
+redis事物是没有回滚操作的。
+
+回滚是比较耗性能的.
+
+redis出现问题，都是语法问题和类型问题，这些问题，都是在编码 阶段必须要解决的 问题
+
+redis事务执行原理图
+
+
+
 
 
 
