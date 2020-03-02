@@ -1,3 +1,7 @@
+git config --global user.email "chenyihongyi@163.com"
+
+git config --global user.name "Your Name"
+
 touch README.md
 
 git init
