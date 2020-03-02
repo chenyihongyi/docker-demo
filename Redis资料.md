@@ -209,7 +209,7 @@ redis事物是没有回滚操作的。
 redis出现问题，都是语法问题和类型问题，这些问题，都是在编码 阶段必须要解决的 问题
 
 redis事务执行原理图
-C:\Users\ElvisChen\Desktop
+![](https://i.imgur.com/PyN8G3K.png)
 
 
 
