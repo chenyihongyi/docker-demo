@@ -51,7 +51,7 @@ MongoDB(数据操作会更加灵活，文档就类似于一个java对象,有属�
 
 7.8 数据国企处理(可以精确到毫秒)
 
-8.Linux(7.0版本)单机版安装 
+8.Linux(CentOS7版本)单机版安装 
 
 安装版本:3.2.9
 
@@ -110,42 +110,80 @@ D:\Program Files\Redis
 10.1 String类型(字符串类型)
 
 string类型适合查询操作，string类型存储对象，需要进行对象转 换为 json串进行存储。
+
 get、set、setnx
-incr、incrby、decr、decrby(只能针对整数类型的数据进行使 用)
+
+incr、incrby、decr、decrby(只能针对整数类型的数据进行使用)
+
 incr命令,它是原子操作,用来生成数据库的自增主键，是非常安全 且高效的
+
 incr使用场景:分布式数据库中订单ID的生成。
+
 10.2 hash类型(散列类型)
+
 hash类型适合增删改操作。
+
 hset、 hget、 hdel(存取某个数据库字段，不能对多个字段赋 值)
+
 hmget、 hmset(可以对多个字段赋值)
+
 使用场景：存储增删改操作居多的pojo对象数据。
+
 10.3 list类型(队列类型)
+
 底层是双向链表进行存储的，特点就是两端操作比较方便，适 合于实现队列(FIFO)和栈(后入先出)
+
 使用场景:适合只对list列表两端进行操作的场景。
+
 list类型存储的数据特点:有序可重复
+
 lpush、lpop、 rpush、rpop、lrange
+
 可以用来作为消息队列进行使用。
+
 可以用来实现商品评论表
+
 key的设计很重要:
+
 1. 使用谁作为key，使用谁查询方便
+
 2.key的定义,一定要有意义。
+
 3.key的定义举例:
+
 item ：1 {id:1, name:'zhangsan'}
+
 10.4 set类型(集合类型)
-* set类型存储的数据特点:无序不重复
-* sadd、srem(删除)、smembers(查询去重元素的个数)
-* eg: sadd set a a b b c 4 3 // 返回结果为5
-* 可以进行多集合操作:sdiff(差集操作),sinter(交集操 作),sunion(并集操作)
+
+set类型存储的数据特点:无序不重复
+
+sadd、srem(删除)、smembers(查询去重元素的个数)
+
+eg: sadd set a a b b c 4 3 // 返回结果为5
+
+可以进行多集合操作:sdiff(差集操作),sinter(交集操 作),sunion(并集操作)
+
 10.5 zset类型(有序集合类型、sortedset)
-* 对集合中的每个元素都设置一个分数，根据分数排序。
-* zset类型存储的数据结构特点:不重复，有序
-* 底层还是一个set集合，但是该集合给每个member设置一个 score, 通过score进行排序。
-* zadd, zrem, zrange, zscore
-* eg: zadd zset 30 a 40 c 20 b
-* eg: zrange zset 0 -1 // 结果 “b”"a" "c"
-* 使用场景:销售排行榜
-* 销售作为分数
-* 销售人员或者商品作为member
+
+对集合中的每个元素都设置一个分数，根据分数排序。
+
+zset类型存储的数据结构特点:不重复，有序
+
+底层还是一个set集合，但是该集合给每个member设置一个 score, 通过score进行排序。
+
+zadd, zrem, zrange, zscore
+
+eg: zadd zset 30 a 40 c 20 b
+
+eg: zrange zset 0 -1 // 结果 “b”"a" "c"
+
+使用场景:销售排行榜
+
+销售作为分数
+
+销售人员或者商品作为member
+
+
 
 
 
