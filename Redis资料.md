@@ -345,6 +345,16 @@ synchronize、Reentrantlock
 分布式锁又是什么？
 分布式锁的注意事项
 
+![](https://i.imgur.com/lelHhQv.png)
+
+分布式锁都有那些实现？
+基于数据库的乐观锁实现分布式锁。
+基于zookeeper临时节点，配合节点监控策略。
+redis中的setnx和set命令都可以实现。
+实现分布式锁
+
+
+
 
 
 
