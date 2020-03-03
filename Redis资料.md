@@ -330,11 +330,22 @@ Redis主从复制的缺点,没有办法对master进行动态选举,需要使用S
 
 哨兵进程的作用:
 
-![](https://i.imgur.com/fTQVLhr.png)
+![](https://i.imgur.com/fJMEde2.png)
 
 故障判断原理分析
 
-![](https://i.imgur.com/nD8qkrC.png)
+![](https://i.imgur.com/8qUlJHw.png)
+
+15.Redis的分布式锁
+什么是锁？
+单应用中使用锁：(单进程多线程)
+synchronize、Reentrantlock
+分布式应用中使用锁:(多进程多线程)
+分布式锁是控制分布式系统之间同步访问共享资源的一种方式。
+分布式锁又是什么？
+分布式锁的注意事项
+
+
 
 
 
