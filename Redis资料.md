@@ -327,8 +327,11 @@ Redis增量同步主要指slave完成初始化后开始正常工作时，Master�
 14.Redis哨兵(sentinel)机制
 通过redis的哨兵机制，可以实现Redis主从服务器之间的切换，而且完成多个从服务器之间的选举操 作。
 Redis主从复制的缺点,没有办法对master进行动态选举,需要使用Sentinel机制完成动态选举。
+
 哨兵进程的作用:
-![](https://i.imgur.com/8bp6gBs.png)
+![](https://i.imgur.com/JqXhagp.png)
+
+
 
 
 
