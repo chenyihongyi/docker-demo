@@ -311,7 +311,20 @@ Redis的全量同步过程主要分三个阶段
 同步增量阶段:Master向slave同步写操作命令。
 
 全量同步原理图
+
 ![](https://i.imgur.com/kP0Cj9r.png)
+
+增量同步
+
+Redis增量同步主要指slave完成初始化后开始正常工作时，Master发生的写操作同步到 slave的过程。
+
+通常情况下，Master每执行一个写命令就会向slave发送相同的写命令，然后slave接收 并执行。
+
+增量同步原理图
+
+![](https://i.imgur.com/kBATJ7j.png)
+
+
 
 
 
