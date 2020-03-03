@@ -332,6 +332,10 @@ Redis主从复制的缺点,没有办法对master进行动态选举,需要使用S
 
 ![](https://i.imgur.com/fTQVLhr.png)
 
+故障判断原理分析
+
+![](https://i.imgur.com/nD8qkrC.png)
+
 
 
 
