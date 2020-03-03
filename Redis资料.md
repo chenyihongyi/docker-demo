@@ -353,6 +353,104 @@ synchronize、Reentrantlock
 redis中的setnx和set命令都可以实现。
 实现分布式锁
 
+![](https://i.imgur.com/dxwfC5g.png)
+
+![](https://i.imgur.com/HhDpaS2.png)
+
+释放锁
+
+![](https://i.imgur.com/pmBr0hu.png)
+
+15.Redis集群
+架构图
+1.每一个redis节点都可以互相通信(ping pong机制)
+2.client访问redis集群，不需要访问中间代理层。
+3.redis集群容错需要自检，不能通过第三方进行检测。
+4.redis cluster中的redis节点如何存储数据？(key-value)
+1.crc16算法(key)得出hash值
+2.hash值再对 16384取余。余数肯定在0-16383之间
+3.key-value数据就会存储到余数对应的一个slot槽中
+
+1.redis cluster维护了一个关系：redis cluster-->redis node-->slot(槽)
+
+2.hash slot槽总共有16384个,每个槽都有一个标识，从0-16383之间。
+
+3.redis cluster就是通过slot槽组成了一个大集群。
+
+4.理论上redis cluster最多的redis node数是16384个redis节点，每个节点一个slot槽。
+
+5.一个slot槽中，可以存储不止一对key-value数据。
+
+6.slot槽存储量的多少，取决于物理机的内存。
+
+16.Redis集群容错
+
+节点fail
+
+超过半数以上的主节点，和某节点连接不上，则判定该节点fail。
+
+一旦节点fail,redis cluster会自动从它的从节点中，选举一个节点作为新的master节点。
+
+集群fail
+
+如果master节点fail，但是它的slave节点没有升级为master，都判定集群fail。
+
+ 如果超过半数以上的master fail了，那么不管slave有没有升级为master，都判定集群 fail。
+ 
+17.集群安装
+建议的最少集群中的节点数是6个节点(3主、3从)
+
+要进行选举，并且需要超过半数以上，所以最少需要3主，3从是为了高可用。
+
+18.维护节点
+
+19.新增主节点
+
+20.数据迁移
+
+集群环境下的数据迁移，就是slot槽的迁移。
+
+21.新增从节点
+
+需要指定新增的从节点，是属于哪个主节点的。
+
+22.删除节点
+
+如果删除的是主节点，那么先要考虑数据迁移
+
+再进行删除。
+
+23.Redis和lua的整合
+
+![5e04d5c1710c9bd1e9151b4d3f11a090.png](en-resource://database/1138:0)
+
+24.Redis的消息模型
+
+队列模式
+
+使用list类型的两个命令: lpush、rpop
+
+使用场景:一对一的消息,类似于QQ私聊
+
+发布订阅模式
+
+使用subscribe、publish命令实现的。
+
+使用场景:一对多的消息，类似于QQ群聊.
+
+订阅(消费者)
+
+subscribe kkb
+
+发布(生产者)
+
+publish kkb
+
+25.常见的缓存问题
+
+
+
+
 
 
 
