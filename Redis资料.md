@@ -231,7 +231,7 @@ Redis会在指定情况下触发快照:
 
 满足一定条件之后, 使用快照方式去进行持久化
 
-* redis.conf(条件是以save开头的，一行是一个条件,条件之间是 或的关系)
+redis.conf(条件是以save开头的，一行是一个条件,条件之间是 或的关系)
 
 save 900 1
 
@@ -337,20 +337,31 @@ Redis主从复制的缺点,没有办法对master进行动态选举,需要使用S
 ![](https://i.imgur.com/8qUlJHw.png)
 
 15.Redis的分布式锁
+
 什么是锁？
+
 单应用中使用锁：(单进程多线程)
+
 synchronize、Reentrantlock
+
 分布式应用中使用锁:(多进程多线程)
+
 分布式锁是控制分布式系统之间同步访问共享资源的一种方式。
+
 分布式锁又是什么？
+
 分布式锁的注意事项
 
 ![](https://i.imgur.com/lelHhQv.png)
 
 分布式锁都有那些实现？
+
 基于数据库的乐观锁实现分布式锁。
+
 基于zookeeper临时节点，配合节点监控策略。
+
 redis中的setnx和set命令都可以实现。
+
 实现分布式锁
 
 ![](https://i.imgur.com/dxwfC5g.png)
@@ -362,13 +373,21 @@ redis中的setnx和set命令都可以实现。
 ![](https://i.imgur.com/pmBr0hu.png)
 
 15.Redis集群
+
 架构图
+
 1.每一个redis节点都可以互相通信(ping pong机制)
+
 2.client访问redis集群，不需要访问中间代理层。
+
 3.redis集群容错需要自检，不能通过第三方进行检测。
+
 4.redis cluster中的redis节点如何存储数据？(key-value)
+
 1.crc16算法(key)得出hash值
+
 2.hash值再对 16384取余。余数肯定在0-16383之间
+
 3.key-value数据就会存储到余数对应的一个slot槽中
 
 1.redis cluster维护了一个关系：redis cluster-->redis node-->slot(槽)
@@ -450,8 +469,23 @@ publish kkb
 
 ![](https://i.imgur.com/xAfz8SB.png)
 
-//todo
-Redis 容错  23-4 26 34
+26.缓存双写一致性
+
+1.在读取缓存的时候，一致性很好保证。
+
+2.在写缓存和写数据库的时候，如何保证缓存和数据库的一致性呢？
+
+1. 先更新数据库再更新缓存(不建议使用)
+
+2. 先更新数据库再删除缓存
+
+解决方案1
+
+![](https://i.imgur.com/2LBvlZS.png)
+
+
+
+
 
 
 
