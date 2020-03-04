@@ -448,6 +448,11 @@ publish kkb
 
 25.常见的缓存问题
 
+![](https://i.imgur.com/xAfz8SB.png)
+
+//todo
+Redis 容错  23-4 26 34
+
 
 
 
