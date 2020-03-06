@@ -1,17 +1,18 @@
 package com.springcloud.demo.dockerdemo.docker_service;
 
-import com.alibaba.fastjson.JSON;
-import com.demo.utils.PropertiesUtil;
-import com.demo.web.ErrorInfoEnum;
-import com.demo.web.TopController;
-import com.demo.web.resp.Resp;
-import com.demo.request.SmsSendRequest;
-import com.demo.sms.model.response.SmsSendResponse;
-import com.demo.sms.util.ChuangLanSmsUtil;
-import com.demo.swagger.annotations.Api;
+//import com.alibaba.fastjson.JSON;
+//import com.demo.utils.PropertiesUtil;
+//import com.demo.web.ErrorInfoEnum;
+//import com.demo.web.TopController;
+//import com.demo.web.resp.Resp;
+//import com.demo.request.SmsSendRequest;
+//import com.demo.sms.model.response.SmsSendResponse;
+//import com.demo.sms.util.ChuangLanSmsUtil;
+//import com.demo.swagger.annotations.Api;
 
-import com.demo.swagger.annotations.ApiOperation;
+//import com.demo.swagger.annotations.ApiOperation;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ import java.util.Properties;
  * @Description:
  * @Date: 2019/11/13 21:46
  */
-@Api(value = "注册短信发送接口", description = "注册操作短信发送", produces = MediaType.APPLICATION_JSON_VALUE)
+/*@Api(value = "注册短信发送接口", description = "注册操作短信发送", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 public class SMSController extends TopController {
@@ -51,10 +52,10 @@ public class SMSController extends TopController {
         smsSingleRequestServerUrl = properties.getProperty("sms.url");
     }
 
-    @ApiOperation(value = "短信发送接口", notes = "输入字段：phone（手机号），auth(随机数),password（密码），introduce_m_id（介绍人ID）", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
+   @ApiOperation(value = "短信发送接口", notes = "输入字段：phone（手机号），auth(随机数),password（密码），introduce_m_id（介绍人ID）", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "m/sendsms", method = RequestMethod.POST)
     @ResponseBody
-    public Resp SMSSender(HttpServletRequest request,
+   public Resp SMSSender(HttpServletRequest request,
                           HttpServletResponse response,
                           HttpSession httpSession,
                           String phone,
@@ -82,4 +83,4 @@ public class SMSController extends TopController {
           return Integer.valueOf(smsSingleResponse.getCode());
       }
 
-}
+}*/
