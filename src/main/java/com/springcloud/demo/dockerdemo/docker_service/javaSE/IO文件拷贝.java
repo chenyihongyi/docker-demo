@@ -19,7 +19,6 @@ public class IO文件拷贝 {
 
     public static void test() {
         try (
-
                 FileInputStream fis = new FileInputStream("C:\\Users\\ElvisChen\\Desktop\\test.txt");
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 FileOutputStream fos = new FileOutputStream("C:\\Users\\ElvisChen\\Desktop\\copy.txt");
@@ -33,7 +32,6 @@ public class IO文件拷贝 {
             e.printStackTrace();
         }
     }
-
-
-
 }
+
+
