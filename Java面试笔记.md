@@ -1239,30 +1239,50 @@ int k = 2
 int num = 1; // 原⼦子操作
 num++; // ⾮原子操作，从主内存读取num到线程工作内存，进行 +1，再把num写到主内存, 除
 非用原子类，即java.util.concurrent.atomic⾥的原⼦变量类
+
 解决办法是可以用synchronized 或 Lock(比如ReentrantLock) 来把这个多步操作“变成”原
 ⼦操作，但是volatile，前⾯面有说到不不能修饰有依赖值的情况
+
 public class XdTest {
+
 private int num = 0;
+
 //使用lock，每个对象都是有锁，只有获得这个锁才可以进行对应的操作
+
 Lock lock = new ReentrantLock();
+
 public void add1(){
+
 lock.lock();
+
 try {
+
 num++;
+
 }finally {
+
 lock.unlock();
+
 }
+
 }
 //使用synchronized，和上述是一个操作，这个是保证方法被锁住而已，上述的是代码块被
+
 锁住
+
 public synchronized void add2(){
+
 num++;
+
 }
+
 }
 解决核心思想：把一个方法或者代码块看做一个整体，保证是一个不可分割的整体
 
-有序性: 程序执行的顺序按照代码的先后顺序执行，因为处理器器可能会对指令进行重排序
+有序性: 程序执行的顺序按照代码的先后顺序执行，因为处理器可能会对指令进行重排序
+
 JVM在编译java代码或者CPU执行JVM字节码时，对现有的指令进行重新排序，主要目的是优化运行
+
 效率(不改变程序结果的前提)
 
 int a = 3 //1
@@ -1274,6 +1294,7 @@ int c =5 //3
 int h = a*b*c //4
 
 上⾯的例子 执行顺序1,2,3,4 和 2,1,3,4 结果都是一样，指令重排序可以提高执行效率，但是
+
 多线程上可能会影响结果
 
 假如下⾯的场景，正常是顺序处理
@@ -1451,6 +1472,234 @@ private void meathB(){
 耗CPU
 
 常见的自旋锁：TicketLock,CLHLock,MSCLock
+
+4.用过java⾥面有哪些锁？分别解释下
+
+共享锁：也叫S锁/读锁，能查看但无法修改和删除的一种数据锁，加锁后其它用户可以并发读取、查询数
+据，但不能修改，增加，删除数据，该锁可被多个线程所持有，用于资源数据共享
+
+互斥锁：也叫X锁/排它锁/写锁/独占锁/独享锁/ 该锁每一次只能被一个线程所持有,加锁后任何线程试图
+再次加锁的线程会被阻塞，直到当前线程解锁。例子：如果线程A对data1加上排他锁后，则其他线程
+不能再对data1加任何类型的锁,获得互斥锁的线程即能读数据又能修改数据
+
+死锁：两个或两个以上的线程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若
+⽆外力作用，它们都将无法让程序进行下去
+
+下面三种是Jvm为了提高锁的获取与释放效率而做的优化，针对Synchronized的锁升级，锁的状态是通过
+对象监视器在对象头中的字段来表明，是不可逆的过程，
+
+偏向锁：一段同步代码一直被一个线程所访问，那么该线程会自动获取锁，获取锁的代价更低，
+
+轻量级锁：当锁是偏向锁的时候，被其他线程访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形
+式尝试获取锁，但不会阻塞，且性能会⾼点
+
+重量级锁：当锁为轻量级锁的时候，其他线程虽然是自旋，但自旋不会一直循环下去，当自旋一定次数的时
+候且还没有获取到锁，就会进入阻塞，该锁升级为重量级锁，重量级锁会让其他申请的线程进入阻塞，性能
+也会降低
+
+分段锁、行锁、表锁
+
+5.写个多线程死锁的例子
+
+public class DeadLockDemo {
+
+    private static String locka = "locka";
+
+    private static String lockb = "lockb";
+
+    public void methodA(){
+
+        synchronized (locka){
+            System.out.println("我是A方法中获得了锁A "+Thread.currentThread().getName() );
+
+            //让出CPU执行权，不释放锁
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            synchronized(lockb){
+                System.out.println("我是A方法中获得了锁B "+Thread.currentThread().getName() );
+            }
+        }
+    }
+
+    public void methodB(){
+        synchronized (lockb){
+            System.out.println("我是B方法中获得了锁B "+Thread.currentThread().getName() );
+
+            //让出CPU执行权，不释放锁
+            try {
+                Thread.sleep(2000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            synchronized(locka){
+                System.out.println("我是B方法中获得了锁A "+Thread.currentThread().getName() );
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("主线程运行开始运行: " + Thread.currentThread().getName());
+        DeadLockDemo deadLockDemo = new DeadLockDemo();
+
+        new Thread(()->{
+           deadLockDemo.methodA();
+        }).start();
+
+        new Thread(()->{
+            deadLockDemo.methodB();
+        }).start();
+
+        System.out.println("主线程运行结束: "+Thread.currentThread().getName());
+    }
+}
+
+线上死锁
+
+public class DeadLockDemoOnline {
+
+    private static String locka = "locka";
+
+    private static String lockb = "lockb";
+
+    public void methodA(){
+
+        synchronized (locka){
+            System.out.println("我是A方法中获得了锁A "+Thread.currentThread().getName() );
+
+            //让出CPU执行权，不释放锁
+            try {
+                //Thread.sleep(2000);
+                System.out.println("methodA");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            synchronized(lockb){
+                System.out.println("我是A方法中获得了锁B "+Thread.currentThread().getName() );
+            }
+        }
+    }
+
+
+    public void methodB(){
+        synchronized (lockb){
+            System.out.println("我是B方法中获得了锁B "+Thread.currentThread().getName() );
+
+            //让出CPU执行权，不释放锁
+            try {
+                //Thread.sleep(2000);
+                System.out.println("methodB");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            synchronized(locka){
+                System.out.println("我是B方法中获得了锁A "+Thread.currentThread().getName() );
+            }
+        }
+    }
+
+    public static void main(String [] args){
+
+        System.out.println("主线程运行开始运行："+Thread.currentThread().getName());
+
+        DeadLockDemoOnline deadLockDemo = new DeadLockDemoOnline();
+
+        for(int i=0;i<5;i++){
+            new Thread(()->{
+                deadLockDemo.methodA();
+            }).start();
+
+            new Thread(()->{
+                deadLockDemo.methodB();
+            }).start();
+        }
+        System.out.println("主线程运行结束："+Thread.currentThread().getName());
+    }
+}
+
+死锁的4个必要条件
+
+互斥条件：资源不能共享，只能由一个线程使用
+
+请求与保持条件：线程已经获得一些资源，但因请求其他资源发生阻塞，对已经获得的资源保持不释放
+
+不可抢占：有些资源是不可强占的，当某个线程获得这个资源后，系统不能强行回收，只能由线程使用完自己释放
+
+循环等待条件：多个线程形成环形链，每个都占用对方申请的下个资源
+
+只要发⽣死锁，上⾯的条件都成立；只要一个不满足，就不会发生死锁
+
+解决死锁，通过调整锁的范围
+
+public class FixDeadLockDemo {
+
+    private static String locka = "locka";
+
+    private static String lockb = "lockb";
+
+    public void methodA(){
+    
+        synchronized (locka){
+        
+            System.out.println("我是A方法中获得了锁A "+Thread.currentThread().getName() );
+
+            //让出CPU执行权，不释放锁
+            try{
+                Thread.sleep(2000);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
+        }
+        synchronized (lockb){
+            System.out.println("我是A方法中获得了锁B "+Thread.currentThread().getName() );
+        }
+    }
+
+    public void methodB(){
+        synchronized (lockb){
+            System.out.println("我是B方法中获得了锁B "+Thread.currentThread().getName() );
+            //让出CPU执行权，不释放锁
+            try{
+                Thread.sleep(2000);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+        synchronized (locka){
+            System.out.println("我是B方法中获得了锁A "+Thread.currentThread().getName() );
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("主线程运行开始运行："+Thread.currentThread().getName());
+
+        FixDeadLockDemo deadLockDemo = new FixDeadLockDemo();
+
+        for(int i = 0; i<10;i++){
+            new Thread(()->{
+                deadLockDemo.methodA();
+            }).start();
+
+            new Thread(()->{
+                deadLockDemo.methodB();
+            }).start();
+        }
+        System.out.println("主线程运行结束："+Thread.currentThread().getName());
+    }
+}
+
+
+
+
 
 
 
