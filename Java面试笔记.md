@@ -1697,7 +1697,162 @@ public class FixDeadLockDemo {
     }
 }
 
+6.设计一个简单的不不可重入锁
 
+不可重入锁：若当前线程执行某个方法已经获取了该锁，那么在⽅方法中尝试再次获取锁时，就会获取不到被阻塞
+
+同⼀个线程，重复获取锁失败，形成死锁，这个就是不可重入锁
+
+public class UnreentrantLock {
+
+    private boolean isLocked = false;
+
+    public synchronized void lock() throws InterruptedException{
+
+        System.out.println("进入wait等待 " + Thread.currentThread().getName());
+
+        //判断是否已经被锁，如果被锁则当前请求的线程进行等待
+        while (isLocked){
+            System.out.println("进入wait等待 " + Thread.currentThread().getName());
+            wait();
+        }
+        //进行加锁
+        isLocked = true ;
+    }
+
+    public synchronized void unlock(){
+        System.out.println("进入unlock解锁 " +Thread.currentThread().getName());
+        isLocked = false;
+        //唤醒对象锁池里面的一个线程
+        notify();
+    }
+}
+
+public class UnreentrantLockMain {
+
+ private UnreentrantLock unreentrantLock = new UnreentrantLock();
+
+    //加锁建议在try里面，解锁建议在finally
+    public void  methodA(){
+
+        try {
+            unreentrantLock.lock();
+            System.out.println("methodA方法被调用");
+            methodB();
+
+        }catch (InterruptedException e){
+            e.fillInStackTrace();
+
+        } finally {
+            unreentrantLock.unlock();
+        }
+    }
+
+    public void methodB(){
+
+        try {
+            unreentrantLock.lock();
+            System.out.println("methodB方法被调用");
+        }catch (InterruptedException e){
+            e.fillInStackTrace();
+        } finally {
+            unreentrantLock.unlock();
+        }
+    }
+
+    public static void main(String [] args){
+
+        for(int i=0 ;i<10;i++){
+            //演示的是同个线程
+            new UnreentrantLockMain().methodA();
+        }
+    }
+}
+
+7.设计一个简单的可重入锁
+
+public class ReentrantLock {
+
+    private boolean isLocked = false;
+
+    //用于记录是不是重入的线程
+    private Thread lockedOwer = null;
+
+    //累计加锁次数，加锁一次累加1，解锁一次减少1
+    private int lockedCount = 0;
+
+    public synchronized void lock() throws InterruptedException{
+        System.out.println("进入lock加锁 " +Thread.currentThread().getName());
+        Thread thread = Thread.currentThread();
+
+        //判断是否是同个线程获取锁, 引用地址的比较
+        while(isLocked && lockedOwer !=thread){
+            System.out.println("进入wait等待 " + Thread.currentThread().getName());
+            System.out.println("当前锁状态 isLocked = " +isLocked);
+            System.out.println("当前count数量 lockedCount = " +lockedCount);
+            wait();
+        }
+
+        //进行加锁
+        isLocked = true ;
+        lockedOwer = thread ;
+        lockedCount++;
+    }
+
+    public synchronized void unlock(){
+        System.out.println("进入unlock解锁 " +Thread.currentThread().getName());
+
+        Thread thread = Thread.currentThread();
+
+        //线程A加的锁，只能由线程A解锁，其他线程B不能解锁
+        if(thread == this.lockedOwer){
+            lockedCount--;
+            if(lockedCount == 0){
+                isLocked = false;
+                lockedOwer = null;
+                //唤醒对象锁池里面的一个线程
+                notify();
+            }
+        }
+    }
+}
+
+public class ReentrantLockMain {
+
+    private ReentrantLock reentrantLock = new ReentrantLock();
+
+    //加锁建议在try⾥里里⾯面，解锁建议在finally
+    public void methodA(){
+        try {
+            reentrantLock.lock();
+            System.out.println("methodA方法被调用");
+            methodB();
+
+        } catch (InterruptedException e) {
+            e.fillInStackTrace();
+        }finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    public void methodB() {
+
+        try {
+            reentrantLock.lock();
+            System.out.println("methodB方法被调用");
+        } catch (InterruptedException e) {
+            e.fillInStackTrace();
+        }finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    public static void main(String[] args) {
+        for(int i = 0; i<10; i++){
+            new ReentrantLockMain().methodA();
+        }
+    }
+}
 
 
 
