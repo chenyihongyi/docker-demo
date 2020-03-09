@@ -2058,6 +2058,208 @@ ReentrantLock：
 
 6、底层不同是AQS的state和FIFO队列来控制加锁
 
+4.知道ReentrantReadWriteLock吗？和ReentrantLock有啥不同？
+
+ReentrantReadWriteLock
+
+1、读写锁接口ReadWriteLock接口的一个具体实现，实现了读写锁的分离，
+
+2、支持公平和非公平，底层也是基于AQS实现
+
+3、允许从写锁降级为读锁
+
+流程：先获取写锁，然后获取读锁，最后释放写锁；但不能从读锁升级到写锁
+
+4、重入：读锁后还可以获取读锁；获取了写锁之后既可以再次获取写锁又可以获取读锁
+
+核⼼：读锁是共享的，写锁是独占的。 读和读之间不会互斥，读和写、写和读、写和写之
+间才会互斥，主要是提升了读写的性能
+
+ReentrantLock是独占锁且可重入的，相⽐synchronized而言功能更加丰富也更适合复杂的并发
+
+场景，但是也有弊端，假如有两个线程A/B访问数据，加锁是为了防⽌线程A在写数据， 线程B在读
+
+数据造成的数据不一致； 但线程A在读数据，线程C也在读数据，读数据是不会改变数据没有必要加
+
+锁，但是还是加锁了，降低了程序的性能，所以就有了ReadWriteLock读写锁接口
+
+4.并发编程里面解决生产消费者模型你知道哪几种方式？
+
+核心：要保证⽣产者不会在缓冲区满时放入数据，消费者也不会在缓冲区空时消耗数据
+
+常用的同步方法是采⽤信号或加锁机制
+
+1、wait() / notify()方法
+
+2、await() / signal()方法
+
+用ReentrantLock和Condition实现等待/通知模型
+
+3、Semaphore信号量
+
+4、BlockingQueue阻塞队列
+
+ArrayBlockingQueue
+
+LinkedBlockingQueue
+
+put方法用来向队尾存入元素，如果队列满，则阻塞
+
+take方法用来从队首取元素，如果队列为空，则阻塞
+
+你知道阻塞队列BlockingQueue不？介绍下常见的阻塞队列
+
+BlockingQueue: j.u.c包下的提供了线程安全的队列访问的接口，并发包下很多高级同步类的实
+现都是基于阻塞队列实现的
+
+1、当阻塞队列进行插入数据时，如果队列已满，线程将会阻塞等待直到队列非满
+
+2、从阻塞队列读数据时，如果队列为空，线程将会阻塞等待直到队列⾥面是非空的时候
+
+常见的阻塞队列
+
+ArrayBlockingQueue：
+
+基于数组实现的一个阻塞队列，需要指定容量⼤小，FIFO先进先出顺序
+
+LinkedBlockingQueue：
+
+基于链表实现的一个阻塞队列，如果不指定容量大小，默认
+
+Integer.MAX_VALUE, FIFO先进先出顺序
+
+PriorityBlockingQueue：
+
+一个支持优先级的无界阻塞队列，默认情况下元素采用自然顺序升序排序，也
+
+可以自定义排序实现 java.lang.Comparable接口
+
+DelayQueue：
+
+延迟队列，在指定时间才能获取队列列元素的功能，队列头元素是最接近过期的
+
+元素，⾥面的对象必须实现 java.util.concurrent.Delayed 接口并实现CompareTo和
+
+getDelay方法
+
+5.你知道非阻塞队列ConcurrentLinkedQueue不，它怎么实现线程安全的？
+
+线程安全原因：
+
+ConcurrentLinkedQueue是基于链表实现的无界线程安全队列，采用FIFO进行排序
+
+保证线程安全的三要素：原子、有序、可见性
+
+1、底层结构是Node，链表头部和尾部节点是head和tail，使用节点变量和内部类属性使用
+
+volatile声明保证了有序和可见性
+
+2、插入、移除、更新操作使用CAS无锁操作，保证了原子性
+
+3、假如多线程并发修改导致 CAS 更新失败，采用for循环插入保证更新操作成功
+
+6.平时多线程⽤的挺多的，写出3条你遵循的多线程最佳实践
+
+给不同模块的线程起名称，方便便后续排查问题
+
+使用同步代码块或者同步的方法的时候，尽量减小同步范围
+
+多用并发集合少用同步集合
+
+支持线程安全
+
+同步集合：Hashtable/Vector/同步工具类包装Collections.synXXX
+
+并发集合：ConcurrentHashMap、CopyOnWriteArrayList
+
+线上业务需要使用多线程，优先考虑线程池是否更加合适，然后判断哪种线程池比较好，最后才是自己创建单一线程
+
+用过线程池不? 有什么好处， java里里有哪些是常用的线程池
+
+好处：重用存在的线程，减少对象创建销毁的开销，有效的控制最大并发线程数，提高系统资源的使
+⽤率，同时避免过多资源竞争，避免堵塞，且可以定时定期执行、单线程、并发数控制，配置任务过多任务后的拒绝策略略等功能
+类别
+
+newFixedThreadPool
+
+一个定长线程池，可控制线程最大并发数
+
+newCachedThreadPool
+
+一个可缓存线程池
+
+newSingleThreadExecutor
+
+一个单线程化的线程池，用唯一的工作线程来执行任务
+
+newScheduledThreadPool
+
+一个定长线程池，支持定时/周期性任务执行
+
+7.是否知道线程池里面的坑
+
+Executors创建的线程池底层也是调用 ThreadPoolExecutor，只不过使用不同的参数、队列、
+拒绝策略略等,如果使用不当，会造成资源耗尽问题；
+
+直接使用ThreadPoolExecutor让使用者更加清楚线程池允许规则，常见参数的使用，避免风险
+
+常见的线程池问题：
+
+newFixedThreadPool和newSingleThreadExecutor:
+
+队列使用LinkedBlockingQueue，队列长度为 Integer.MAX_VALUE，可能造成堆积,导致OOM
+
+![](https://i.imgur.com/WM7UEZJ.png)
+
+newScheduledThreadPool和newCachedThreadPool:
+
+线程池里面允许最大的线程数是Integer.MAX_VALUE，可能会创建过多线程，导致OOM
+
+![](https://i.imgur.com/DWxCFOx.png)
+
+8.ThreadPoolExecutor构造函数⾥面的参数你是否掌握，能否解释下各个参数的作用
+
+public ThreadPoolExecutor(int corePoolSize,
+
+int maximumPoolSize,
+
+long keepAliveTime,
+
+TimeUnit unit,
+
+BlockingQueue<Runnable> workQueue,
+
+ThreadFactory threadFactory,
+
+RejectedExecutionHandler handler)
+
+corePoolSize：核心线程数，线程池也会维护线程的最少数量，默认情况下核心线程会一直存活，
+
+即使没有任务也不会受存keepAliveTime控制
+
+坑：在刚创建线程池时线程不会立即启动，到有任务提交时才开始创建线程并逐步线程数目达到
+
+corePoolSize
+
+maximumPoolSize：线程池维护线程的最大数量，超过将被阻塞
+
+坑：当核心线程满，且阻塞队列也满时，才会判断当前线程数是否小于最大线程数，才决定是否创建新线程
+
+keepAliveTime：非核心线程的闲置超时间，超过这个时间就会被回收，直到线程数量等于corePoolSize
+
+unit：指定keepAliveTime的单位，如TimeUnit.SECONDS、TimeUnit.MILLISECONDS
+
+workQueue:线程池中的任务队列,常用的是 ArrayBlockingQueue、LinkedBlockingQueue、SynchronousQueue
+
+threadFactory：创建新线程时使用的工厂
+
+handler: RejectedExecutionHandler是一个接口且只有一个方法,线程池中的数量大于maximumPoolSize，
+对拒绝任务的处理策略，默认有4种策略AbortPolicy、CallerRunsPolicy、DiscardOldestPolicy、DiscardPolicy
+
+
+
+
+
 
 
 
