@@ -1926,6 +1926,109 @@ cpu资源会一直被占用
 
 用，其次检查当前标志是否等于预期标志，如果都相等就会以原子的方式将引用和标志都设置为新值
 
+七 、并发编程底层原理
+
+1.知道AQS吗？能否介绍下，它的核⼼思想是什么
+
+AQS的全称为（AbstractQueuedSynchronizer），这个类在java.util.concurrent.locks
+包下面。它是一个Java提高的底层同步工具类，比如CountDownLatch、ReentrantLock，
+Semaphore，ReentrantReadWriteLock，SynchronousQueue，FutureTask等皆是基于
+AQS的
+
+只要搞懂了AQS，那么J.U.C中绝大部分的api都能轻松掌握
+
+简单来说：是用一个int类型的变量表示同步状态，并提供了⼀系列的CAS操作来管理这个同步状态
+对象
+
+一个是 state（用于计数器，类似gc的回收计数器）
+
+一个是线程标记（当前线程是谁加锁的），
+
+一个是阻塞队列列（用于存放其他未拿到锁的线程)
+
+例子：线程A调用了lock()方法，通过CAS将state赋值为1，然后将该锁标记为线程A加锁。如果线
+
+程A还未释放锁时，线程B来请求，会查询锁标记的状态，因为当前的锁标记为线程A，线程B未能匹
+
+配上，所以线程B会加入阻塞队列，直到线程A触发了 unlock()方法，这时线程B才有机会去拿到
+
+锁，但是不一定肯定拿到
+
+acquire(int arg) 好⽐加锁lock操作
+
+tryAcquire()尝试直接去获取资源，如果成功则直接返回,AQS⾥面未实现但没有定义成
+
+abstract，因为独占模式下只用实现tryAcquire-tryRelease，而共享模式下只用实现
+
+tryAcquireShared-tryReleaseShared，类似设计模式里面的适配器器模式
+
+addWaiter() 根据不同模式将线程加入等待队列的尾部，有Node.EXCLUSIVE互斥模式、
+
+Node.SHARED共享模式；如果队列不为空，则以通过compareAndSetTail方法以CAS将当前线程
+
+节点加入到等待队列的末尾。否则通过enq(node)方法初始化一个等待队列
+
+acquireQueued()使线程在等待队列中获取资源，一直获取到资源后才返回,如果在等待过程
+
+中被中断，则返回true，否则返回false
+
+release(int arg)好比解锁unlock
+
+独占模式下线程释放指定量的资源，⾥面是根据tryRelease()的返回值来判断该线程是
+
+否已经完成释放掉资源了；在自义定同步器在实现时，如果已经彻底释放资源(state=0)，要返回
+
+true，否则返回false
+
+unparkSuccessor方法用于唤醒等待队列列中下一个线程
+
+你知道的AQS有几种同步方式，实现同步器一般要覆盖哪些方法
+
+独占式: 比如ReentrantLock
+
+共享式：比如Semaphore
+
+存在组合：组合式的如ReentrantReadWriteLock，AQS为使用提供了底层支撑，使用者可以自由
+
+组装实现
+
+1. boolean tryAcquire(int arg)
+
+2. boolean tryRelease(int arg)
+
+3. int tryAcquireShared(int arg)
+
+4. boolean tryReleaseShared(int arg)
+
+5. boolean isHeldExclusively()
+
+不需要全部实现，根据获取的锁的种类可以选择实现不同的方法，⽐如
+
+实现支持独占锁的同步器应该实现tryAcquire、 tryRelease、isHeldExclusively
+
+实现支持共享获取的同步器应该实现tryAcquireShared、tryReleaseShared、
+
+isHeldExclusively
+
+注意：线程获取锁成功后直接返回，不会进入等待队列里面，只有失败的时候才会
+
+获取失败则将当前线程封装为Node.EXCLUSIVE的Node节点插入AQS阻塞队列列的尾部
+
+调用LockSupport.park(this)方式阻塞自己
+
+2.java⾥面的公平锁和⾮非公平锁你知道多少，有没看过ReentrantLock源码？
+
+![](https://i.imgur.com/kmX3OTX.png)
+
+公平锁和⾮公平锁核心区别
+
+![](https://i.imgur.com/HuJnxpi.png)
+
+3.ReentrantLock和synchronized使用的场景是什么，实现机制有什么不同
+
+
+
+
 
 
 
