@@ -2656,8 +2656,32 @@ select video_id,count(id) num from chapter group by video_id having num >10 orde
 
 为什么timestamp只能到2038年
 
-MySQL的timestamp类型是4个字节，最⼤大值是2的31次⽅方减1，结果是2147483647，
-转换成北北京时间就是2038-01-19 11:14:07
+MySQL的timestamp类型是4个字节，最大值是2的31次⽅方减1，结果是2147483647，
+转换成北京时间就是2038-01-19 11:14:07
+
+4.线上数据库的一个商品表数据量过千万，做深度分页的时候性能很慢，有什么优化思路
+
+1、后端、前端缓存
+
+2、使用ElasticSearch分⻚页搜索
+
+3、合理使用mysql查询缓存，覆盖索引进行查询分页
+
+select title,cateory from product limit 1000000,100
+
+4、如果id是自增且不存在中间删除数据，使用子查询优化，定位偏移位置的id
+
+select * from oper_log where type='BUY' limit 1000000,100; //5.秒
+
+select id from oper_log where type='BUY' limit 1000000,1; // 0.4秒
+
+select * from oper_log where type='BUY' and id>=(select id from oper_log
+where type='BUY' limit 1000000,1) limit 100; //0.8秒
+
+5.产品迭代更新，开发好代码和数据库，上线流程是怎样的
+
+![](https://i.imgur.com/hWyWXz0.png)
+
   
 
 
