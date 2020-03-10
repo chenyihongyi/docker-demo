@@ -2650,7 +2650,14 @@ select video_id,count(id) num from chapter group by video_id having num >10 orde
   
 ![](https://i.imgur.com/1PKCkP5.png)
 
+3.MySQL中的datetime和timestamp有什么区别
 
+![](https://i.imgur.com/RhG0kra.png)
+
+为什么timestamp只能到2038年
+
+MySQL的timestamp类型是4个字节，最⼤大值是2的31次⽅方减1，结果是2147483647，
+转换成北北京时间就是2038-01-19 11:14:07
   
 
 
