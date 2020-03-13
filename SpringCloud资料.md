@@ -64,13 +64,13 @@ Eureka通过心跳检查,客户端缓存等机制，确保了系统的高可用�
 
 
 
-三.OpenFeign
+三.Ribbon负载均衡、OpenFeign 与Feign 
 
 1.OpenFeign可以使消费者将提供者提供的服务名伪装未接口进行消费，消费者只需使用"Service接口+注解"的方式即可直接调用Service接口方法，而无需再使用RestTemplate.
 
 
 
-2.Ribbon负载均衡、OpenFeign 与Feign 
+2.
 
 ![](https://i.imgur.com/Hnm7Et1.png)
 
