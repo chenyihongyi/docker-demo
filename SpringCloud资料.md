@@ -10,16 +10,15 @@ SpringBoot为SpringCloud提供了代码实现环境,使用SpringBoot将其它组
 
 3.SpringCloud 与SpringBoot的版本
 
-SpringCloud   SpringBoot
+SpringCloud                   SpringBoot
 
-Greenwich     2.1.x
+Greenwich                      2.1.x
 
-Finchley      2.0.x
+Finchley                       2.0.x
 
-Edgware       1.5.x
+Edgware                        1.5.x
 
-Dalston       1.5.x
-
+Dalston                        1.5.x
 
 2.Eureka
 Eureka Client是一个java客户端,内置又负载均衡器，为消费者从Eureka Server的服务注册表中选择合适的提供者,，即使所有的Eureka  Server都挂掉，客户端依然可以利用缓存中的信息为消费者提供服务发现功能。不过，此时不再接受服务注册，因为Eureka Server已经全部挂掉了。这就是Ap原则。
