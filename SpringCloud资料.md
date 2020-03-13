@@ -58,6 +58,69 @@ Eureka通过心跳检查,客户端缓存等机制，确保了系统的高可用�
 
 ![](https://i.imgur.com/REMw0Ue.png)
 
+![](https://i.imgur.com/6cwwLbP.png)
+
+![](https://i.imgur.com/L0yqpnK.png)
+
+
+
+三.OpenFeign
+
+1.OpenFeign可以使消费者将提供者提供的服务名伪装未接口进行消费，消费者只需使用"Service接口+注解"的方式即可直接调用Service接口方法，而无需再使用RestTemplate.
+
+
+
+2.Ribbon负载均衡、OpenFeign 与Feign 
+
+![](https://i.imgur.com/Hnm7Et1.png)
+
+</--openfeign依赖-->
+
+<dependency>
+<groupId>org.springframework.cloud</groupId>
+<artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+
+</--feign依赖-->
+
+<dependency>
+<groupId>org.springframework.cloud</groupId>
+<artifactId>spring-cloud-starter-feign</artifactId>
+</dependency>
+
+2.OpenFeign配置在客户端
+
+![](https://i.imgur.com/OUnche9.png)
+
+![](https://i.imgur.com/6gtDJv0.png)
+
+OpenFeign底层依旧调的restTemplate.
+
+![](https://i.imgur.com/mLflAIw.png)
+
+3.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
