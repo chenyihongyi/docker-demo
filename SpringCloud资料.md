@@ -112,6 +112,48 @@ OpenFeign底层依旧调的restTemplate.
 
 ![](https://i.imgur.com/M39z1BF.png)
 
+四.Hystrix熔断机制与服务降级
+
+1.熔断机制
+
+熔断机制是服务雪崩的一种有效解决方案。当指定时间窗内的请求失败率达到设定阈值时，系统将通过断路器直接将此请求链路断开。常见的熔断有两种：
+
+预熔断
+
+即时熔断
+
+2.服务降级
+
+服务降级是请求发生问题时的一种增强用户体验的方式。
+
+现代系统中，当发生服务熔断时，一定会发生服务降级，但发生服务降级，并不一定是发生了服务熔断。
+
+3.Spring Cloud是通过Hystrix来实现服务熔断与降级的。
+
+4.Hystrix简介
+
+![](https://i.imgur.com/8kROcx2.png)
+
+![](https://i.imgur.com/Qwhyggy.png)
+
+![](https://i.imgur.com/vfrujgn.png)
+
+![](https://i.imgur.com/Uu7Z90Y.png)
+
+![](https://i.imgur.com/2nLD9o9.png)
+
+![](https://i.imgur.com/5jjcRQo.png)
+
+![](https://i.imgur.com/mclJ3wW.png)
+
+
+
+5.
+
+
+
+
+
 
 
 
