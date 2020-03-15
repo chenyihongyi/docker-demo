@@ -132,6 +132,10 @@ OpenFeign底层依旧调的restTemplate.
 
 4.Hystrix简介
 
+4.1 fallbackMethod服务降级
+
+4.2 fallbackFactory服务降级
+
 ![](https://i.imgur.com/8kROcx2.png)
 
 ![](https://i.imgur.com/Qwhyggy.png)
@@ -146,9 +150,45 @@ OpenFeign底层依旧调的restTemplate.
 
 ![](https://i.imgur.com/mclJ3wW.png)
 
+5.Hystrix高级属性配置
+
+执行隔离策略：
+
+防止提供者被熔断，防止大量客户端请求被阻塞。
+
+![](https://i.imgur.com/QA0CLF3.png)
+
+6.Hystrix高级属性配置2
+
+7.服务降级报警机制
+
+双重检测锁(有问题发送短信)
+
+![](https://i.imgur.com/GnyHBaI.png)
+
+![](https://i.imgur.com/GVmcP1U.png)
+
+8.Dashboard监控仪表盘
+
+![](https://i.imgur.com/YTl8ZEN.png)
+
+![](https://i.imgur.com/YTl8ZEN.png)
+
+![](https://i.imgur.com/LiFCjnH.png)
+
+![](https://i.imgur.com/qmgg7X4.png)
+
+![](https://i.imgur.com/pPC3mSF.png)
+
+![](https://i.imgur.com/cDNAYqD.png)
+
+![](https://i.imgur.com/Kb4Mx37.png)
+
+![](https://i.imgur.com/UJ90ED5.png)
 
 
-5.
+
+
 
 
 
