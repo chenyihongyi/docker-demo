@@ -186,6 +186,54 @@ OpenFeign底层依旧调的restTemplate.
 
 ![](https://i.imgur.com/UJ90ED5.png)
 
+五.微服务网关Zuul
+
+https://github.com/Netflix/zuul/wiki
+
+Zuul主要提供了对请求的路由与过滤功能。路由功能主要指，将外部请求转发到具体的微服务实例上，是外部访问微服务的统一入口。过滤功能主要指，对请求的处理过程进行干预，对请求进行校验、服务聚合等处理。
+将Zuul放到整个系统架构中，其作用是这样的，服务提供者是消费者通过EurekaServer进行访问的。
+
+![](https://i.imgur.com/5rRq2w0.png)
+
+![](https://i.imgur.com/w1aca7X.png)
+
+![](https://i.imgur.com/5k6EN58.png)
+
+![](https://i.imgur.com/3IuXwEj.png)
+
+![](https://i.imgur.com/fkwZaeH.png)
+
+![](https://i.imgur.com/DU6cuk8.png)
+
+![](https://i.imgur.com/BInLMG2.png)
+
+![](https://i.imgur.com/RBJTRA1.png)
+
+![](https://i.imgur.com/H2wjbBP.png)
+
+![](https://i.imgur.com/wEPjR4J.png)
+
+![](https://i.imgur.com/ySVx4dB.png)
+
+![](https://i.imgur.com/kXy7MOo.png)
+
+![](https://i.imgur.com/cbjL4qz.png)
+
+![](https://i.imgur.com/P60zeE0.png)
+
+![](https://i.imgur.com/7O92Ji4.png)
+
+六.SpringCloud Config
+
+![](https://i.imgur.com/N24cZfC.png)
+
+![](https://i.imgur.com/L8pP0Nv.png)
+
+![](https://i.imgur.com/41GAGjJ.png)
+
+30-6 61
+
+
 
 
 
