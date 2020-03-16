@@ -299,6 +299,8 @@ Zuul主要提供了对请求的路由与过滤功能。路由功能主要指，�
 
 ![](https://i.imgur.com/WjgNJ3D.png)
 
+![](https://i.imgur.com/BHMa2hC.png)
+
 
 
 
