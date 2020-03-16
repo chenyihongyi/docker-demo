@@ -261,6 +261,12 @@ Zuul主要提供了对请求的路由与过滤功能。路由功能主要指，�
 
 ![](https://i.imgur.com/QYbY5SV.png)
 
+![](https://i.imgur.com/5jJRkbp.png)
+
+![](https://i.imgur.com/HqXr0Jj.png)
+
+![](https://i.imgur.com/gv4yIuy.png)
+
 
 
 
