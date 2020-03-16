@@ -267,6 +267,40 @@ Zuul主要提供了对请求的路由与过滤功能。路由功能主要指，�
 
 ![](https://i.imgur.com/gv4yIuy.png)
 
+![](https://i.imgur.com/TDjd0sZ.png)
+
+![](https://i.imgur.com/pPGeowK.png)
+
+![](https://i.imgur.com/oqpvbxw.png)
+
+![](https://i.imgur.com/JO58raW.png)
+
+![](https://i.imgur.com/XzEsl68.png)
+
+![](https://i.imgur.com/oqxJKJ6.png)
+
+![](https://i.imgur.com/dCcE2zg.png)
+
+![](https://i.imgur.com/GvmDBjx.png)
+
+![](https://i.imgur.com/ygo4vnI.png)
+
+![](https://i.imgur.com/bxXljeK.png)
+
+八.Spring Cloud Stream
+
+![](https://i.imgur.com/42gn7D9.png)
+
+![](https://i.imgur.com/8ckbekK.png)
+
+![](https://i.imgur.com/vDXD4gX.png)
+
+![](https://i.imgur.com/BM5JPUk.png)
+
+![](https://i.imgur.com/WjgNJ3D.png)
+
+
+
 
 
 
