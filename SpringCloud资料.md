@@ -243,6 +243,26 @@ Zuul主要提供了对请求的路由与过滤功能。路由功能主要指，�
 
 ![](https://i.imgur.com/yFc99jH.png)
 
+![](https://i.imgur.com/qt3DDvf.png)
+
+![](https://i.imgur.com/gWVknNl.png)
+
+![](https://i.imgur.com/PARfBwT.png)
+
+![](https://i.imgur.com/3b4kmCI.png)
+
+![](https://i.imgur.com/1v9tTAH.png)
+
+七.调用链跟踪Spring Cloud Sleuth + zipkin
+
+![](https://i.imgur.com/odSWyVo.png)
+
+![](https://i.imgur.com/zQr2NCx.png)
+
+![](https://i.imgur.com/QYbY5SV.png)
+
+
+
 
 
 
