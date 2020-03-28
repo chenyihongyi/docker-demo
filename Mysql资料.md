@@ -1553,6 +1553,56 @@ https://dev.mysql.com/doc/refman/5.7/en/general-thread-states.html
 
 3.mysql语句优化的几个小建议
 
+介绍日常工作应该尽量避免的sql语句
+
+第一个注意点：
+
+尽量避免使用select *from ，尽量精确到想要的结果字段
+
+第二个注意点：
+
+尽量避免条件使用or
+
+第三个注意点：
+
+记得加上limit 限制行数，避免数据量过大消耗性能
+
+第四个注意点：
+
+使用模糊查询时，%放在前面是会使索引失效
+
+mysql> explain select * from test where servnumber like '%1367000%'\G
+
+*************************** 1. row ***************************
+
+id: 1
+
+select_type: SIMPLE
+
+table: test
+
+partitions: NULL
+
+type: ALL
+
+possible_keys: NULL
+
+key: NULL
+
+key_len: NULL
+
+ref: NULL
+
+rows: 996303
+
+filtered: 11.11
+
+Extra: Using where
+
+第五个注意点：
+
+要小心条件字段类型的转换
+
 
 
 
