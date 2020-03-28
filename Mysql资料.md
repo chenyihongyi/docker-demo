@@ -741,11 +741,349 @@ employee) and a.sal between d.lowsal and d.higsal;
 
 三.mysql核心知识之DCL数据控制语言（对用户权限的设置）
 
-//todo
+1.mysql限制root用户指定ip登录
+
+查看root用户可以在哪台机器登录
+
+select user,host from mysql.user where user='root';
+
+修改mysql库里边的user表
+
+update mysql.user set host='localhost' where user='root';
+
+刷新权限
+
+flush privileges;
+
+2.mysql必备知识之用户密码
+
+修改用户密码分三种方法：
+
+1. 第一种：set password for 用户@ip = password('密码');
+
+set password for root@localhost = password('root');
+
+2. 第二种：mysqladmin -u用户 -p旧密码 password 新密码;
+
+mysqladmin -urootmysqladmin -uroot -proot password;
+
+3. 第三种：update mysql.user set authentication_string=password('密码') where user='用户' and host='ip';
+
+   update mysql.user set authentication_string=password('root') where user='root' and
+   host='localhost';
+
+忘记密码:
+
+1. 第一步：修改配置文件my.cnf (默认在/etc/my.cnf)，在[mysqld]下面加上 skip-grant-tables （跳过权限的意
+思）
+
+2. 第二步：重启mysql服务
+
+3. 第三步：mysql -uroot -p 无需密码登录进入
+
+4. 第四步：修改密码
+
+4.mysql实战系列之创建新用户并限制ip网段登录
+
+如何创建新用户与删除用户并限制ip登录
+
+创建用户的语法：create user 'username'@'host' identified by 'password';
+
+username：你将创建的用户名
+
+host：指定该用户在哪个主机上可以登陆，如果是本地用户可用localhost，如果想让该用户可以从任意远程主机 登
+陆，可以使用通配符%
+
+password：该用户的登陆密码，密码可以为空，如果为空则该用户可以不需要密码登陆服务器
+
+创建用户语法：
+
+创建一个pig用户，并指定登录密码：123456，可以在任何一台远程主机都可以登录
+
+create user 'pig'@'%' identified by '123456';
+
+创建一个pig用户，并指定登录密码：为空，指定在120网段的机器登录
+
+create user 'pig'@'120.%.%.%' identified by '';
+
+查看权限：
+
+![](https://i.imgur.com/BkYQctu.png)
+
+删除用户语法：drop user 'username'@'host';
+
+drop user 'pig'@'%';
+
+delete from mysql.user where user='pig';
+
+5.mysql实战系列之库表权限授权与回收
+
+讲解如何限制用户对库表的增删改查权限
+
+授权语法：grant 权限1,权限2..... on 数据库对象 to '用户'
+
+grant 权限1,权限2..... on 数据库对象 to '用户'@'host' identified by 'password';
+
+all privileges:代表所有权限
+
+. :代表所有库所有表
+
+对现有用户进行授权：对现有用户pig授予所有库所有表所有权限。
+
+grant all privileges on *.* to 'pig';
+
+对没有的用户进行授权：创建一个新用户dog授予XD库的所有权限，登录密码123456，任何一台主机登录
+
+grant all privileges on XD.* to 'dog'@'%' identified by '123456';
+
+对没有的用户进行授权：创建一个新用户cat授予XD库的employee表 查与修改权限，登录密码123456，任何一台主机登
+录
+
+grant select,update on XD.employee to 'cat'@'%' identified by '123456'
+
+
+对没有的用户进行授权：对用户cat授予XD库的employee表insert 权限，登录密码123456，任何一台主机登录
+
+grant insert on XD.employee to 'cat'@'%' identified by '123456';
+
+回收语法：revoke 权限1,权限2..... on 数据库对象 from '用户'@'host';
+
+回收pig用户的所有权限（注意：并没有回收它的登录权限）
+
+revoke all privileges on *.* from 'pig' @ '%';
+
+flush privileges;
+
+回收pig用户的所有权限（并回收它的登录权限）
+
+delete from mysql.user where user='pig';
+
+flush privileges;
+
+回收cat用户对XD库的employee的查与修改权限
+
+revoke select,update on XD.employee from 'cat'@'%';
+
+flush privileges;
 
 四.mysql的核心知识之事务实战，视图，触发器，以及存储过程
 
-//todo
+1.什么是事务?
+
+答：数据库事务通常指对数据库进行读或写的一个操作过程。有两个目的，第一个是为数据库操作提供了一个从失败中恢复
+到正常状态的方法，同时提供了数据库即使在异常状态下仍能保持一致性的方法；第二个是当多个应用程序在并发访问数据
+库时，可以在这些应用程序之间提供一个隔离方法，以防止彼此的操作互相干扰。
+
+事务的特性（ACID）：
+
+原子性(Atomicity)：事务必须是原子工作单元，一个事务中的所有语句，应该做到：要么全做，要么一个都不
+做；
+
+一致性(Consistency):让数据保持逻辑上的“合理性”，比如：小明给小红打10000块钱，既要让小明的账户减少
+10000，又要让小红的账户上增加10000块钱；
+
+隔离性(Isolation)：如果多个事务同时并发执行，但每个事务就像各自独立执行一样。
+
+持久性(Durability)：一个事务执行成功，则对数据来说应该是一个明确的硬盘数据更改（而不仅仅是内存中的
+变化）。
+
+要使用事务的话，表的引擎要为innodb引擎
+
+2.事务的开启以及事务实战，深入了解什么是事务
+
+事务的开启与提交：
+
+事务的开启：begin; start transaction;
+
+事务的提交：commit;
+
+事务的回滚：rollback;
+
+创建一个账户表模拟转账
+
+create table account (
+id tinyint(5) zerofill auto_increment not null comment 'id编号',
+name varchar(20) default null comment '客户姓名',
+money decimal(10,2) not null comment '账户金额',
+primary key (id)
+)engine=innodb charset=utf8;
+
+开启autocommit（临时生效）：
+
+OFF（0）：表示关闭 ON （1）：表示开启
+
+![](https://i.imgur.com/1NGKNAS.png)
+
+开启autocommit（永久生效）：
+
+修改配置文件：vi /etc/my.cnf 在[mysqld]下面加上：autocommit=1 记得重启服务才会生效
+
+3.视图的优缺点以及应用
+
+什么是视图？视图的作用是什么？
+
+视图（view）是一种虚拟存在的表，是一个逻辑表，它本身是不包含数据的。作为一个select语句保存在数据字典中的。
+通过视图，可以展现基表（用来创建视图的表叫做基表base table）的部分数据，说白了视图的数据就是来自于基表
+
+视图的优点是：
+
+1）简单：使用视图的用户完全不需要关心后面对应的表的结构、关联条件和筛选条件，对用户来说已经是过滤好的复合条件
+的结果集。
+
+2）安全：使用视图的用户只能访问他们被允许查询的结果集，对表的权限管理并不能限制到某个行某个列，但是通过视图就
+可以简单的实现。
+
+3）数据独立：一旦视图的结构确定了，可以屏蔽表结构变化对用户的影响，源表增加列对视图没有影响;源表修改列名，则
+可以通过修改视图来解决，不会造成对访问者的影响。
+
+4）不占用空间：视图是逻辑上的表，不占用内存空间
+总而言之，使用视图的大部分情况是为了保障数据安全性，提高查询效率。
+
+视图的创建以及修改
+
+创建的基本语法是：
+
+create view <视图名称> as select 语句;
+
+create view <视图名称> (字段) as select 语句;
+
+create or replace view <视图名称>;
+
+修改的语法是：
+
+alter view <视图名称> as select 语句;
+
+视图删除语法：
+
+drop view <视图名称> ;
+
+视图的缺点
+
+1)性能差：sql server必须把视图查询转化成对基本表的查询，如果这个视图是由一个复杂的多表查询所定义，那么，即
+使是视图的一个简单查询，sql server也要把它变成一个复杂的结合体，需要花费一定的时间。
+
+2)修改限制：当用户试图修改试图的某些信息时，数据库必须把它转化为对基本表的某些信息的修改，对于简单的试图来
+说，这是很方便的，但是，对于比较复杂的试图，可能是不可修改的。
+
+4.mysql 的触发器介绍
+
+什么是触发器？
+
+触发器就是监视某种情况，并触发某种操作
+
+创建触发器的语法:
+
+create trigger 触发器名称 after/before insert/update/delete on 表名
+for each row
+begin
+sql语句;
+end
+
+after/before:可以设置为事件发生前或后
+
+insert/update/delete:它们可以在执行insert、update或delete的过程中触发
+
+for each row:每隔一行执行一次动作
+
+删除触发器的语法：
+
+drop trigger 触发器名称;
+
+演示：
+
+创建一个员工迟到表：
+create table work_time_delay(
+empno int not null comment '雇员编号',
+ename varchar(50) comment '雇员姓名',
+status int comment '状态'
+);
+
+delimiter // 自定义语句的结束符号
+mysql> delimiter //
+mysql>
+mysql> create trigger trig_work after insert on work_time_delay
+-> for each row
+-> begin
+-> update employee set sal=sal-100 where empno=new.empno;
+-> end
+-> //
+Query OK, 0 rows affected (0.01 sec)
+new：指的是事件发生before或者after保存的新数据
+
+5.mysql的存储过程介绍
+
+什么是存储过程？
+
+存储过程就是把复杂的一系列操作，封装成一个过程。类似于shell，python脚本等。
+
+存储过程的优缺点
+
+优点是：
+
+1)复杂操作，调用简单
+
+2)速度快
+
+缺点是：
+
+1）封装复杂
+
+2) 没有灵活性
+
+创建存储过程语法：
+
+create procedure 名称 (参数....)
+
+begin
+
+过程体;
+
+过程体;
+
+end
+
+参数：in|out|inout 参数名称 类型（长度）
+
+in：表示调用者向过程传入值（传入值可以是字面量或变量）
+
+out：表示过程向调用者传出值(可以返回多个值)（传出值只能是变量）
+
+inout：既表示调用者向过程传入值，又表示过程向调用者传出值（值只能是变量）
+
+声明变量：declare 变量名 类型(长度) default 默认值;
+
+给变量赋值：set @变量名=值;
+
+调用存储命令：call 名称(@变量名);
+
+删除存储过程命令：drop procedure 名称;
+
+查看创建的存储过程命令：
+
+show create procedure 名称\G;
+
+创建一个简单的存储过程：
+mysql> delimiter //
+mysql> create procedure name(in n int)
+-> begin
+-> select * from employee limit n;
+-> end
+-> //
+Query OK, 0 rows affected (0.00 sec)
+mysql> set @n=5;
+-> //
+Query OK, 0 rows affected (0.00 sec)
+mysql>
+mysql> call name(@n);
+
+mysql> create procedure name()
+-> begin
+-> declare n int default 6;
+-> select * from employee limit n;
+-> end
+-> //
+Query OK, 0 rows affected (0.00 sec)
+mysql> call name();
 
 五.mysql核心知识之索引与存储引擎
 
@@ -1214,6 +1552,8 @@ set profiling = on ;
 https://dev.mysql.com/doc/refman/5.7/en/general-thread-states.html
 
 3.mysql语句优化的几个小建议
+
+
 
 
 
